@@ -1,0 +1,52 @@
+# Node dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Build outputs / caches
+.dist/
+dist/
+build/
+lib/
+.cache/
+.tmp/
+tmp/
+temp/
+
+# OS files
+.DS_Store
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Cypress artifacts (if generated elsewhere and copied here)
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
+
+# Sample/test text fixtures created for manual testing
+sample-cypress-output.txt
+test-*.txt
+test.txt
+
+# Optional: lockfiles are usually committed for Node projects
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml

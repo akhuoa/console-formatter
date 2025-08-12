@@ -1,0 +1,22 @@
+{
+  "name": "console-formatter",
+  "version": "1.0.0",
+  "description": "Format plain text console output from Cypress tests with ANSI codes",
+  "main": "formatter.js",
+  "scripts": {
+    "start": "node formatter.js",
+    "format": "node formatter.js"
+  },
+  "keywords": [
+    "cypress",
+    "console",
+    "formatter",
+    "ansi",
+    "colors"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2"
+  }
+}
