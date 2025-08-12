@@ -27,6 +27,79 @@ function escapeHtml(s){
     .replaceAll('>','&gt;');
 }
 
+// Basic ANSI SGR to HTML converter for common Chalk/Cypress outputs
+// Supports: reset (0), bold (1/22), underline(4/24), colors (30-37,90-97), reset color (39)
+function ansiToHtml(input){
+  const ESC = /\x1b\[((?:\d{1,3}(?:;\d{1,3})*)?)m/g;
+  let result = '';
+  let lastIndex = 0;
+  const state = { color: null, bold: false, underline: false };
+
+  const openSpan = () => {
+    const classes = [];
+    if (state.color) classes.push(state.color);
+    if (state.bold) classes.push('bold');
+    if (state.underline) classes.push('underline');
+    return classes.length ? `<span class="${classes.join(' ')}">` : '';
+  };
+
+  let openTag = '';
+  const reopen = () => { if (openTag) result += '</span>'; openTag = openSpan(); if (openTag) result += openTag; };
+  const closeAll = () => { if (openTag) { result += '</span>'; openTag = ''; } };
+
+  const mapColor = (code) => {
+    const base = {
+      30: 'ansi-gray', // black → gray on dark bg
+      31: 'ansi-red',
+      32: 'ansi-green',
+      33: 'ansi-yellow',
+      34: 'ansi-blue',
+      35: 'ansi-magenta',
+      36: 'ansi-cyan',
+      37: 'ansi-white'
+    };
+    const bright = {
+      90: 'ansi-gray', // bright black → gray
+      91: 'ansi-red',
+      92: 'ansi-green',
+      93: 'ansi-yellow',
+      94: 'ansi-blue',
+      95: 'ansi-magenta',
+      96: 'ansi-cyan',
+      97: 'ansi-white'
+    };
+    return base[code] || bright[code] || null;
+  };
+
+  let m;
+  while ((m = ESC.exec(input)) !== null) {
+    const chunk = input.slice(lastIndex, m.index);
+    result += escapeHtml(chunk);
+    lastIndex = ESC.lastIndex;
+
+    const params = (m[1] || '').length ? m[1].split(';').map(n => parseInt(n, 10)) : [0];
+    for (const code of params) {
+      if (Number.isNaN(code)) continue;
+      if (code === 0) { // reset
+        state.color = null; state.bold = false; state.underline = false; closeAll();
+      } else if (code === 1) { state.bold = true; reopen(); }
+      else if (code === 22) { state.bold = false; reopen(); }
+      else if (code === 4) { state.underline = true; reopen(); }
+      else if (code === 24) { state.underline = false; reopen(); }
+      else if (code === 39) { state.color = null; reopen(); }
+      else {
+        const cls = mapColor(code);
+        if (cls) { state.color = cls; reopen(); }
+      }
+    }
+  }
+
+  // tail
+  result += escapeHtml(input.slice(lastIndex));
+  if (openTag) result += '</span>';
+  return result;
+}
+
 function colorize(line){
   let html = escapeHtml(line);
 
@@ -57,6 +130,11 @@ function colorize(line){
 }
 
 function format(text){
+  // If ANSI sequences present, convert to HTML spans
+  if (/\x1b\[/.test(text)) {
+    return ansiToHtml(text);
+  }
+  // Otherwise, use semantic colorizer
   return text.split('\n').map(colorize).join('\n');
 }
 

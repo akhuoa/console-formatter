@@ -21,5 +21,6 @@ pre.console{background:var(--panel);padding:12px;border-radius:8px;border:1px so
 .ansi-blue{color:var(--blue)}
 .ansi-magenta{color:var(--magenta)}
 .ansi-gray{color:var(--gray)}
+.ansi-white{color:#ffffff}
 .bold{font-weight:700}
 .underline{text-decoration:underline}
