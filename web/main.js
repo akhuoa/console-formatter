@@ -152,6 +152,7 @@ function setup(){
   const btnClear = document.getElementById('clearBtn');
   const out = document.getElementById('output');
   const preserve = document.getElementById('preserveWhitespace');
+  const backToTop = document.getElementById('backToTop');
 
   btnFetch.addEventListener('click', async () => {
     const url = elUrl.value.trim();
@@ -172,11 +173,27 @@ function setup(){
     const html = format(raw);
     out.innerHTML = html;
     out.style.whiteSpace = preserve.checked ? 'pre-wrap' : 'pre';
+    // Smoothly scroll to the output and focus it for accessibility
+    requestAnimationFrame(() => {
+      try { out.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch {}
+      try { out.focus({ preventScroll: true }); } catch {}
+    });
   });
 
   btnClear.addEventListener('click', () => {
     elText.value = '';
     out.textContent = '';
+  });
+
+  // Back to top behavior
+  const onScroll = () => {
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    if (y > 240) backToTop.hidden = false; else backToTop.hidden = true;
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
 

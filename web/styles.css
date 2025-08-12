@@ -24,3 +24,10 @@ pre.console{background:var(--panel);padding:12px;border-radius:8px;border:1px so
 .ansi-white{color:#ffffff}
 .bold{font-weight:700}
 .underline{text-decoration:underline}
+
+/* Back to top button */
+.back-to-top{position:fixed;right:16px;bottom:16px;padding:10px 14px;border-radius:999px;border:1px solid #333;background:#1b1f24;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer;opacity:.85;transition:opacity .15s, transform .15s;display:inline-flex;align-items:center;gap:6px;line-height:1}
+.back-to-top .icon{display:inline-block;transform:translateY(-2px);font-size:14px}
+.back-to-top .label{font-size:14px}
+.back-to-top:hover{opacity:1;transform:translateY(-1px)}
+.back-to-top[hidden]{display:none}
