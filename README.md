@@ -41,6 +41,23 @@ cat cypress-output.txt | node formatter.js
 npm run format cypress-output.txt
 ```
 
+## Web UI (GitHub Pages)
+
+This repo includes a static web UI under `web/` that you can host on GitHub Pages.
+
+### Deploy steps
+1. Ensure your default branch is `main` and push your changes.
+2. The included GitHub Actions workflow `.github/workflows/deploy-pages.yml` will publish the `web/` folder to Pages automatically on every push to `main`.
+3. In your repository settings, enable GitHub Pages → Source: GitHub Actions.
+
+### Accessing the site
+- User site: `https://<username>.github.io/console-formatter/`
+- Org/repo project site: `https://<org>.github.io/<repo>/`
+
+The UI uses relative asset paths, so it works under a subpath like `/console-formatter/`.
+
+Note: Fetching a URL in the UI requires that the target server allow CORS from GitHub Pages. If a fetch fails due to CORS, paste the text into the textarea instead.
+
 ## Examples
 
 ### Input (plain text):

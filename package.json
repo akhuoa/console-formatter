@@ -5,7 +5,8 @@
   "main": "formatter.js",
   "scripts": {
     "start": "node formatter.js",
-    "format": "node formatter.js"
+    "format": "node formatter.js",
+    "ui": "node server.js"
   },
   "keywords": [
     "cypress",
@@ -17,6 +18,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^4.1.2"
+    "chalk": "^4.1.2",
+    "express": "^4.19.2"
   }
 }

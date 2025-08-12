@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cypress Console Formatter (Web)</title>
+  <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Cypress Console Formatter</h1>
+  <p>Paste plain text output or fetch from a URL, then format with ANSI-like styles in the browser.</p>
+  <p class="note">Note: URL fetches require the remote server to allow CORS. If a URL fails to load on GitHub Pages, paste the text instead.</p>
+    </header>
+
+    <main>
+      <section class="inputs">
+        <div class="input-block">
+          <label for="textInput">Plain Text</label>
+          <textarea id="textInput" placeholder="Paste your Cypress output here..."></textarea>
+        </div>
+        <div class="input-block">
+          <label for="urlInput">Or fetch from URL</label>
+          <div class="row">
+            <input id="urlInput" type="url" placeholder="https://example.com/cypress-output.txt" />
+            <button id="fetchBtn">Fetch</button>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="formatBtn" class="primary">Format</button>
+          <button id="clearBtn">Clear</button>
+          <label class="opt"><input type="checkbox" id="preserveWhitespace" checked /> Preserve whitespace</label>
+        </div>
+      </section>
+
+      <section class="output">
+        <h2>Formatted Output</h2>
+        <pre id="output" class="console"></pre>
+      </section>
+    </main>
+
+    <footer>
+      <small>Local-only demo. No data is stored.</small>
+    </footer>
+
+  <script type="module" src="./main.js"></script>
+  </body>
+</html>
