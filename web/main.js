@@ -185,6 +185,9 @@ function setup(){
   btnClear.addEventListener('click', () => {
     elText.value = '';
     out.textContent = '';
+    if (location.hash.startsWith('#log=')) {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
   });
 
   // Permalink generation: compress text and encode in hash
