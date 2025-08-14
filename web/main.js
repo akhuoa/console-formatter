@@ -261,13 +261,36 @@ function setup(){
   }
   loadFromHash();
 
-  // Back to top behavior
-  const onScroll = () => {
+  // Adjust back-to-top to avoid overlapping footer
+  const footer = document.querySelector('footer');
+  function updateBackToTop(){
     const y = window.scrollY || document.documentElement.scrollTop || 0;
-    if (y > 240) backToTop.hidden = false; else backToTop.hidden = true;
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+    const shouldShow = y > 240;
+    if (!shouldShow){
+      if (!backToTop.hidden){ backToTop.hidden = true; }
+      backToTop.classList.remove('raise');
+      return;
+    }
+    if (backToTop.hidden) backToTop.hidden = false;
+    if (footer){
+      const fRect = footer.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      // Button height estimate
+      const btnRect = backToTop.getBoundingClientRect();
+      const margin = 16; // existing bottom margin
+      const overlapThreshold = vh - (btnRect.height + margin + 8); // 8px buffer
+      if (fRect.top < overlapThreshold){
+        backToTop.classList.add('raise');
+      } else {
+        backToTop.classList.remove('raise');
+      }
+    }
+  }
+  window.addEventListener('scroll', updateBackToTop, { passive: true });
+  window.addEventListener('resize', updateBackToTop);
+  updateBackToTop();
+
+  // Back to top behavior (click)
   backToTop.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });

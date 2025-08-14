@@ -1,5 +1,11 @@
 :root{color-scheme:light dark;--bg:#0b0d10;--panel:#13161a;--text:#e6e6e6;--muted:#a0a0a0;--green:#3fc66b;--red:#ff5f56;--yellow:#f5d061;--cyan:#56c7ff;--blue:#6ab0ff;--magenta:#d97eff;--gray:#9aa0a6}
-*{box-sizing:border-box}body{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,monospace;background:var(--bg);color:var(--text)}header,footer{padding:16px 20px;background:var(--panel);border-bottom:1px solid #222}footer{border-top:1px solid #222;border-bottom:none;color:var(--muted)}h1{margin:0 0 6px;font-size:20px}main{display:grid;grid-template-columns:1fr;gap:16px;padding:16px}
+*{box-sizing:border-box}body{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,monospace;background:var(--bg);color:var(--text)}header,footer{padding:16px 20px;background:var(--panel);border-bottom:1px solid #222}header{position:relative}footer{border-top:1px solid #222;border-bottom:none;color:var(--muted)}h1{margin:0 0 6px;font-size:20px}main{display:grid;grid-template-columns:1fr;gap:16px;padding:16px}
+.links{display:none}
+.gh-link{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #2a2e33;border-radius:6px;background:#1b1f24;color:var(--text);text-decoration:none;font-size:13px;line-height:1;white-space:nowrap}
+.gh-link:hover{background:#222831;border-color:#343a40}
+.gh-icon{display:inline-block}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-links{display:flex;align-items:center;gap:10px}
 .inputs{display:grid;gap:12px}
 .input-block label{display:block;margin:4px 0 6px;color:var(--muted)}
 textarea{width:100%;min-height:180px;resize:vertical;padding:10px;border-radius:8px;border:1px solid #333;background:#0e1116;color:var(--text)}
@@ -33,3 +39,4 @@ pre.console{background:var(--panel);padding:12px;border-radius:8px;border:1px so
 .back-to-top .label{font-size:14px}
 .back-to-top:hover{opacity:1;transform:translateY(-1px)}
 .back-to-top[hidden]{display:none}
+.back-to-top.raise{bottom:96px}
