@@ -150,6 +150,8 @@ function setup(){
   const btnFetch = document.getElementById('fetchBtn');
   const btnFormat = document.getElementById('formatBtn');
   const btnClear = document.getElementById('clearBtn');
+  const btnPermalink = document.getElementById('permalinkBtn');
+  const linkStatus = document.getElementById('linkStatus');
   const out = document.getElementById('output');
   const preserve = document.getElementById('preserveWhitespace');
   const backToTop = document.getElementById('backToTop');
@@ -184,6 +186,80 @@ function setup(){
     elText.value = '';
     out.textContent = '';
   });
+
+  // Permalink generation: compress text and encode in hash
+  function toBase64Url(bytes){
+    let bin = '';
+    for (const b of bytes) bin += String.fromCharCode(b);
+    return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function fromBase64Url(str){
+    str = str.replace(/-/g,'+').replace(/_/g,'/');
+    while (str.length % 4) str += '=';
+    const bin = atob(str);
+    const arr = new Uint8Array(bin.length);
+    for (let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
+    return arr;
+  }
+  // Simple compression (LZ-based using built-in TextEncoder + pako-like fallback not available -> implement tiny LZ77-ish)
+  // for brevity we'll use a naive approach if size small
+  function compress(str){
+    // Use built-in CompressionStream if available (modern browsers)
+    if (typeof CompressionStream !== 'undefined') {
+      const cs = new CompressionStream('gzip');
+      const writer = cs.writable.getWriter();
+      writer.write(new TextEncoder().encode(str));
+      writer.close();
+      return new Response(cs.readable).arrayBuffer().then(buf => new Uint8Array(buf));
+    }
+    // Fallback: no compression, just utf-8 bytes
+    return Promise.resolve(new TextEncoder().encode(str));
+  }
+  function decompress(bytes){
+    if (typeof DecompressionStream !== 'undefined') {
+      const ds = new DecompressionStream('gzip');
+      const w = ds.writable.getWriter();
+      w.write(bytes); w.close();
+      return new Response(ds.readable).text();
+    }
+    return Promise.resolve(new TextDecoder().decode(bytes));
+  }
+
+  async function generatePermalink(){
+    const raw = elText.value || '';
+    if (!raw.trim()) { linkStatus.textContent = 'No content'; return; }
+    linkStatus.textContent = 'Encoding...';
+    try {
+      const bytes = await compress(raw);
+      const b64 = toBase64Url(bytes);
+      const url = `${location.origin}${location.pathname}#log=${b64}`;
+      await navigator.clipboard.writeText(url).catch(()=>{});
+      history.replaceState(null,'',`#log=${b64}`);
+      linkStatus.textContent = 'Link copied';
+      setTimeout(()=>{ if (linkStatus.textContent==='Link copied') linkStatus.textContent=''; }, 3000);
+    } catch(e){
+      linkStatus.textContent = 'Error';
+      console.error(e);
+    }
+  }
+  btnPermalink.addEventListener('click', () => { generatePermalink(); });
+
+  async function loadFromHash(){
+    const m = location.hash.match(/#log=([A-Za-z0-9_-]+)/);
+    if (!m) return;
+    try {
+      const bytes = fromBase64Url(m[1]);
+      const text = await decompress(bytes);
+      elText.value = text;
+      // Auto format after load
+      const html = format(text);
+      out.innerHTML = html;
+      out.style.whiteSpace = preserve.checked ? 'pre-wrap' : 'pre';
+    } catch(e){
+      console.warn('Failed to decode permalink', e);
+    }
+  }
+  loadFromHash();
 
   // Back to top behavior
   const onScroll = () => {
